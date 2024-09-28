@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socialbet - Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f0f0f0;
+      background-image: url('https://www.transparenttextures.com/patterns/cubes.png'),
+        linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-attachment: fixed;
+      color: #333;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 90%;
+      max-width: 1200px;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .menu-icon {
+      font-size: 28px;
+      cursor: pointer;
+      z-index: 1000;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .profile-card {
+      background-color: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      padding: 40px;
+      width: 90%;
+      max-width: 600px;
+      margin-top: 40px;
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .profile-avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid #764ba2;
+      margin-bottom: 20px;
+    }
+
+    .profile-name {
+      font-size: 28px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .profile-email {
+      font-size: 18px;
+      color: #666;
+    }
+
+    .coin-section {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .coin-balance {
+      font-size: 36px;
+      font-weight: 700;
+      color: #764ba2;
+      margin-bottom: 20px;
+    }
+
+    .add-coins-btn {
+      background-color: #4ecdc4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .add-coins-btn:hover {
+      background-color: #45b7ae;
+    }
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+      transition: right 0.3s ease;
+      z-index: 999;
+      border-left: 5px solid #764ba2;
+    }
+
+    .side-menu.open {
+      right: 0;
+    }
+
+    .menu-items {
+      padding: 60px 20px;
+      list-style-type: none;
+    }
+
+    .menu-items li {
+      margin-bottom: 20px;
+    }
+
+    .menu-items a {
+      color: #333;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .menu-items a:hover {
+      color: #764ba2;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 30px;
+      border-radius: 20px;
+      width: 80%;
+      max-width: 400px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    .modal-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #764ba2;
+      margin-bottom: 20px;
+    }
+
+    .coin-input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #764ba2;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+
+    .confirm-btn {
+      background-color: #4ecdc4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .confirm-btn:hover {
+      background-color: #45b7ae;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .winning-history {
+      margin-top: 30px;
+    }
+
+    .winning-history h2 {
+      font-size: 24px;
+      color: #764ba2;
+      margin-bottom: 15px;
+    }
+
+    #winningHistoryList {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    #winningHistoryList li {
+      background-color: #f0f0f0;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    #winningHistoryList .bet-headline {
+      font-weight: bold;
+      color: #333;
+    }
+
+    #winningHistoryList .bet-amount {
+      color: #4ecdc4;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .profile-card {
+        padding: 20px;
+      }
+
+      .profile-avatar {
+        width: 100px;
+        height: 100px;
+      }
+
+      .profile-name {
+        font-size: 24px;
+      }
+
+      .profile-email {
+        font-size: 16px;
+      }
+
+      .coin-balance {
+        font-size: 28px;
+      }
+
+      .add-coins-btn {
+        font-size: 16px;
+      }
+
+      .modal-content {
+      width: 85%;
+      padding: 15px;
+      margin: 20% auto;
+    }
+
+    .coin-input {
+      font-size: 14px;
+    }
+
+    .confirm-btn {
+      font-size: 16px;
+      padding: 8px 16px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+    }
+
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top-bar">
+    <a href="index.html" style="color: white; text-decoration: none;">
+      <i class="fas fa-arrow-left"></i> Back
+    </a>
+    <i id="menuIcon" class="fas fa-bars menu-icon"></i>
+  </div>
+
+  <div id="sideMenu" class="side-menu">
+    <ul class="menu-items">
+      <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+      <li><a href="#" id="logoutButton"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="profile-card">
+    <div class="profile-header">
+      <img id="profileAvatar" src="" alt="Profile Avatar" class="profile-avatar">
+      <h1 class="profile-name" id="profileName">Loading...</h1>
+      <p class="profile-email" id="profileEmail">Loading...</p>
+    </div>
+    <div class="coin-section">
+      <div class="coin-balance" id="coinBalance">0 Coins</div>
+      <button class="add-coins-btn" id="addCoinsBtn">Add Coins</button>
+    </div>
+    <div class="winning-history">
+      <h2>Winning History</h2>
+      <ul id="winningHistoryList"></ul>
+    </div>
+  </div>
+
+  <div id="addCoinsModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 class="modal-title">Add Coins</h2>
+      <input type="number" id="coinAmount" class="coin-input" placeholder="Enter amount of coins">
+      <button class="confirm-btn" id="confirmAddCoins">Confirm</button>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBo0XoLFoSN38UORPAtIY8SM6FyIOvFbkY",
+      authDomain: "socialbet-b6c48.firebaseapp.com",
+      projectId: "socialbet-b6c48",
+      storageBucket: "socialbet-b6c48.appspot.com",
+      messagingSenderId: "924376857681",
+      appId: "1:924376857681:web:b9a152a12a484312024c70",
+      measurementId: "G-0N7NG79KJK"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Get a reference to the Firestore database and Auth
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Check if user is logged in
+    auth.onAuthStateChanged(function (user) {
+      if (user) {
+        // User is signed in, display profile information
+        console.log('User is signed in:', user.email);
+        displayProfile(user);
+      } else {
+        // No user is signed in, redirect to login page
+        console.log('No user signed in, redirecting to login page');
+        window.location.href = 'login.html';
+      }
+    });
+
+    function displayProfile(user) {
+      const profileAvatar = document.getElementById('profileAvatar');
+      const profileName = document.getElementById('profileName');
+      const profileEmail = document.getElementById('profileEmail');
+      const coinBalance = document.getElementById('coinBalance');
+
+      profileName.textContent = user.displayName || 'Anonymous User';
+      profileEmail.textContent = user.email;
+
+      // Set profile image
+      if (user.photoURL) {
+        profileAvatar.src = user.photoURL;
+      } else {
+        profileAvatar.src = 'https://via.placeholder.com/150';
+      }
+
+      // Fetch user's coin balance from Firestore
+      db.collection('users').doc(user.uid).get().then((doc) => {
+        if (doc.exists) {
+          const userData = doc.data();
+          const coins = userData.coins || 0;
+          coinBalance.textContent = `${coins} Coins`;
+
+          // Update user document with email
+          db.collection('users').doc(user.uid).set({
+            email: user.email,
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+          }, {merge: true});
+        } else {
+          console.log('No user data found');
+          coinBalance.textContent = '0 Coins';
+
+          // Create new user document with email and 0 coins
+          db.collection('users').doc(user.uid).set({
+            email: user.email,
+            coins: 0,
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+      }).catch((error) => {
+        console.error('Error fetching user data:', error);
+        coinBalance.textContent = 'Error loading balance';
+      });
+
+      // Fetch winning history
+      fetchWinningHistory(user.uid);
+    }
+
+    function fetchWinningHistory(userId) {
+      const winningHistoryList = document.getElementById('winningHistoryList');
+      winningHistoryList.innerHTML = '<li>Loading winning history...</li>';
+
+      db.collection('participants')
+        .where('userId', '==', userId)
+        .get()
+        .then((querySnapshot) => {
+          console.log(`Found ${querySnapshot.size} participant documents for user ${userId}`);
+          const bets = {};
+          const betPromises = [];
+
+          querySnapshot.forEach((doc) => {
+            const betData = doc.data();
+            console.log(`Processing bet data:`, betData);
+            const betPromise = db.collection('bet').doc(betData.betId).get()
+              .then((betDoc) => {
+                if (betDoc.exists) {
+                  const betInfo = betDoc.data();
+                  console.log(`Bet info for ${betData.betId}:`, betInfo);
+                  if (betInfo.result) {
+                    const userWon = (betInfo.result === 'option1' && betData.selectedOption === 0) ||
+                      (betInfo.result === 'option2' && betData.selectedOption === 1);
+                    console.log(`User won this bet: ${userWon}`);
+                    if (userWon) {
+                      if (!bets[betInfo.headline]) {
+                        bets[betInfo.headline] = {
+                          headline: betInfo.headline,
+                          winningAmount: 0,
+                          betAmount: 0,
+                          userBetCount: 0,
+                          options: new Set()
+                        };
+                      }
+                      const option1Earnings = parseInt(betInfo.option1Earnings) || 0;
+                      const option2Earnings = parseInt(betInfo.option2Earnings) || 0;
+                      const betPrice = parseFloat(betInfo.price) || 0;
+
+                      // Calculate total amount on bet
+                      const totalAmountOnBet = betPrice * (option1Earnings + option2Earnings);
+
+                      // Determine winning participants
+                      const winningParticipants = betInfo.result === 'option1' ? option1Earnings : option2Earnings;
+
+                      // Calculate winning amount before tax
+                      const winningAmountBeforeTax = totalAmountOnBet / winningParticipants;
+
+                      // Apply 10% platform fee
+                      const platformFee = winningAmountBeforeTax * 0.1;
+                      const finalWinningAmount = winningAmountBeforeTax - platformFee;
+
+                      bets[betInfo.headline].winningAmount += finalWinningAmount;
+                      bets[betInfo.headline].betAmount += betPrice;
+                      bets[betInfo.headline].userBetCount += 1;
+                      bets[betInfo.headline].options.add(betData.selectedOption === 0 ? betInfo.option1 : betInfo.option2);
+                      console.log(`Updated bets object:`, bets);
+
+                      // Update winners collection
+                      updateWinnersCollection(userId, betInfo.headline, finalWinningAmount);
+                    }
+                  } else {
+                    console.log(`Bet ${betData.betId} has no result yet`);
+                  }
+                } else {
+                  console.log(`Bet document ${betData.betId} does not exist`);
+                }
+              })
+              .catch(error => {
+                console.error(`Error fetching bet ${betData.betId}:`, error);
+              });
+            betPromises.push(betPromise);
+          });
+
+          Promise.all(betPromises).then(() => {
+            console.log(`All bet promises resolved. Bets object:`, bets);
+            if (Object.keys(bets).length > 0) {
+              const betsHtml = Object.values(bets).map(bet => `
+                <li>
+                  <span class="bet-headline">${bet.headline}</span><br>
+                  Winning Option: ${Array.from(bet.options).join(', ')}<br>
+                  <span class="bet-amount">Total Bet Amount: ${bet.betAmount.toFixed(2)} Coins</span><br>
+                  <span class="bet-amount">Number of Bets: ${bet.userBetCount}</span><br>
+                  <span class="bet-amount">Total Winning Amount: ${bet.winningAmount.toFixed(2)} Coins</span>
+                </li>
+              `).join('');
+              winningHistoryList.innerHTML = betsHtml;
+            } else {
+              winningHistoryList.innerHTML = '<li>No winning history found.</li>';
+            }
+          });
+        })
+        .catch((error) => {
+          console.error('Error fetching winning history:', error);
+          winningHistoryList.innerHTML = '<li>Error loading winning history.</li>';
+        });
+    }
+
+    function updateWinnersCollection(userId, betHeadline, winningAmount) {
+      const user = auth.currentUser;
+      if (user) {
+        const winnerData = {
+          userId: userId,
+          email: user.email,
+          betHeadline: betHeadline,
+          winningAmount: winningAmount,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        db.collection('winners').add(winnerData)
+          .then((docRef) => {
+            console.log("Winner document written with ID: ", docRef.id);
+          })
+          .catch((error) => {
+            console.error("Error adding winner document: ", error);
+          });
+      }
+    }
+
+    // Add coins functionality
+    const addCoinsBtn = document.getElementById('addCoinsBtn');
+    const modal = document.getElementById('addCoinsModal');
+    const closeBtn = document.getElementsByClassName('close')[0];
+    const confirmBtn = document.getElementById('confirmAddCoins');
+    const coinInput = document.getElementById('coinAmount');
+
+    addCoinsBtn.onclick = function () {
+      modal.style.display = 'block';
+    }
+
+    closeBtn.onclick = function () {
+      modal.style.display = 'none';
+    }
+
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    }
+
+    confirmBtn.onclick = function () {
+      const amount = parseInt(coinInput.value);
+      if (isNaN(amount) || amount <= 0) {
+        alert('Please enter a valid amount');
+        return;
+      }
+
+      const user = auth.currentUser;
+      if (user) {
+        db.collection('users').doc(user.uid).get().then((doc) => {
+          let currentCoins = 0;
+          if (doc.exists) {
+            currentCoins = doc.data().coins || 0;
+          }
+          const newBalance = currentCoins + amount;
+
+          db.collection('users').doc(user.uid).set({
+            coins: newBalance,
+            email: user.email,
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+          }, {merge: true}).then(() => {
+            console.log('Coins added successfully');
+            document.getElementById('coinBalance').textContent = `${newBalance} Coins`;
+            modal.style.display = 'none';
+            coinInput.value = '';
+          }).catch((error) => {
+            console.error('Error adding coins:', error);
+            alert('Error adding coins. Please try again.');
+          });
+        });
+      }
+    }
+
+    // Menu functionality
+    const menuIcon = document.getElementById('menuIcon');
+    const sideMenu = document.getElementById('sideMenu');
+
+    menuIcon.addEventListener('click', () => {
+      sideMenu.classList.toggle('open');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (event) => {
+      if (!sideMenu.contains(event.target) && !menuIcon.contains(event.target)) {
+        sideMenu.classList.remove('open');
+      }
+    });
+
+    // Logout functionality
+    const logoutButton = document.getElementById('logoutButton');
+    logoutButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      auth.signOut().then(() => {
+        console.log('User signed out successfully');
+        window.location.href = 'login.html';
+      }).catch((error) => {
+        console.error('Error signing out:', error);
+      });
+    });
+  </script>
+</body>
+
+</html>

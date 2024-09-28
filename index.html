@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socialbet</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="icon" type="image/png"
+    href="https://github.com/ibedevesh/image/blob/main/pinn3-removebg-preview.png?raw=true">
+  <link rel="apple-touch-icon" href="https://github.com/ibedevesh/image/blob/main/pinn3-removebg-preview.png?raw=true">
+  <meta name="theme-color" content="#764ba2">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f0f0f0;
+      background-image: url('https://www.transparenttextures.com/patterns/cubes.png'),
+        linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-attachment: fixed;
+      color: #333;
+    }
+
+    .logo-icon {
+      width: 100px;
+      height: 100px;
+      cursor: pointer;
+      transition: transform 0.1s, filter 0.1s;
+    }
+
+    .logo-icon:active {
+      transform: scale(0.95);
+      filter: brightness(0.9);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 90%;
+      max-width: 1200px;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .menu-icon {
+      font-size: 28px;
+      cursor: pointer;
+      z-index: 1000;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      margin-left: 0;
+    }
+
+    .card-stack {
+      position: relative;
+      width: 90%;
+      max-width: 800px;
+      height: 500px;
+      margin-top: -40px;
+      ;
+    }
+
+    .card-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #f0f0f0;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-layer-1 {
+      transform: rotate(-3deg) translateY(10px);
+      z-index: 2;
+    }
+
+    .card-layer-2 {
+      transform: rotate(3deg) translateY(20px);
+      z-index: 1;
+    }
+
+    .bet-card {
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      box-sizing: border-box;
+      padding: 20px;
+      overflow: visible; // Add this line to allow content to overflow
+    }
+
+    .bet-headline {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      line-height: 1.3;
+      margin-bottom: 20px;
+    }
+
+    .bet-image {
+      width: 100%;
+      height: 270px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .bet-price {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #764ba2;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+    }
+
+
+    .bet-price {
+      position: absolute;
+      top: -15px;
+      right: 20px;
+      background-color: #764ba2;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 0 0 5px 5px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+    }
+
+    .bet-price::before,
+    .bet-price::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      border-top: 8px solid #5a3a7e;
+      border-bottom: 8px solid transparent;
+    }
+
+    .bet-price::before {
+      left: -8px;
+      border-left: 8px solid transparent;
+    }
+
+    .bet-price::after {
+      right: -8px;
+      border-right: 8px solid transparent;
+    }
+
+    .bet-headline {
+      // ... existing styles ...
+      margin-top: 10px; // Add some top margin
+    }
+
+    .bet-options {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .bet-option {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      margin: 0 10px;
+    }
+
+    .bet-option:first-child {
+      background-color: #4ecdc4;
+      color: white;
+    }
+
+    .bet-option:last-child {
+      background-color: #ff6b6b;
+      color: white;
+    }
+
+    .bet-option:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .earnings-bar {
+      height: 10px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .earnings-fill {
+      height: 100%;
+      width: 50%;
+      background-color: #4ecdc4;
+      transition: width 0.3s ease;
+    }
+
+    .earnings-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+      transition: right 0.3s ease;
+      z-index: 999;
+      border-left: 5px solid #764ba2;
+    }
+
+    .side-menu.open {
+      right: 0;
+    }
+
+    .menu-items {
+      padding: 60px 20px;
+      list-style-type: none;
+    }
+
+    .menu-items li {
+      margin-bottom: 20px;
+    }
+
+    .menu-items a {
+      color: #333;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .menu-items a:hover {
+      color: #764ba2;
+    }
+
+    .swipe-buttons {
+      display: flex;
+      justify-content: center;
+      position: absolute;
+      bottom: 0px;
+      left: 0;
+      right: 0;
+      z-index: 10;
+    }
+
+    .swipe-button {
+      font-size: 64px;
+      cursor: pointer;
+      transition: transform 0.2s, color 0.2s;
+      filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3));
+      margin: 0 30px;
+    }
+
+    .swipe-button:hover {
+      transform: scale(1.2);
+    }
+
+    .swipe-left {
+      color: #ff6b6b;
+    }
+
+    .swipe-right {
+      color: #4ecdc4;
+    }
+
+    .swipe-left:hover {
+      color: #ff8787;
+    }
+
+    .swipe-right:hover {
+      color: #6ee7db;
+    }
+
+    .insufficient-balance {
+      color: #ff6b6b;
+      font-size: 16px;
+      text-align: center;
+      margin-top: 10px;
+      display: none;
+    }
+
+    @keyframes swipeLeft {
+      from {
+        transform: translateX(0) rotate(0);
+        opacity: 1;
+      }
+
+      to {
+        transform: translateX(-150%) rotate(-30deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes swipeRight {
+      from {
+        transform: translateX(0) rotate(0);
+        opacity: 1;
+      }
+
+      to {
+        transform: translateX(150%) rotate(30deg);
+        opacity: 0;
+      }
+    }
+
+    .swiping-left {
+      animation: swipeLeft 0.3s ease-out forwards;
+    }
+
+    .swiping-right {
+      animation: swipeRight 0.3s ease-out forwards;
+    }
+
+    /* Mobile-specific styles */
+    @media (max-width: 768px) {
+      body {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .top-bar {
+        justify-content: space-between;
+        padding: 10px 20px;
+        margin: 0;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+      }
+
+      .logo-icon {
+        width: 60px;
+        height: 60px;
+      }
+
+      .menu-icon {
+        margin-right: 50px;
+        /* Remove the right margin */
+      }
+
+      .card-stack {
+        width: 90%;
+        height: calc(100vh - 140px);
+        max-height: 500px;
+        margin: 120px auto 20px;
+      }
+
+      .bet-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .bet-headline {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+
+      .bet-image {
+        height: 40vh;
+        object-fit: cover;
+      }
+
+      .bet-options {
+        margin-top: 10px;
+      }
+
+      .bet-option {
+        padding: 8px 16px;
+        font-size: 16px;
+      }
+
+      .swipe-buttons {
+        display: none;
+      }
+
+
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top-bar">
+    <img src="https://github.com/ibedevesh/image/blob/main/pinn3-removebg-preview.png?raw=true" alt="PingBord Logo"
+      class="logo-icon">
+    <i id="menuIcon" class="fas fa-bars menu-icon"></i>
+  </div>
+
+  <div id="sideMenu" class="side-menu">
+    <ul class="menu-items">
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="#" id="logoutButton"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="card-stack">
+    <div class="card-layer card-layer-2"></div>
+    <div class="card-layer card-layer-1"></div>
+    <div class="bet-card">
+      <div class="bet-headline"></div>
+      <img class="bet-image" src="" alt="Bet Image">
+      <div class="bet-price"></div>
+      <div class="bet-options">
+        <!-- Options will be dynamically added here -->
+      </div>
+      <div class="earnings-bar">
+        <div class="earnings-fill"></div>
+      </div>
+      <div class="earnings-text">
+        <span class="option1-earnings"></span>
+        <span class="option2-earnings"></span>
+      </div>
+      <div class="insufficient-balance">Insufficient balance to participate!</div>
+    </div>
+  </div>
+
+  <div class="swipe-buttons">
+    <i class="fas fa-times-circle swipe-button swipe-left"></i>
+    <i class="fas fa-check-circle swipe-button swipe-right"></i>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+
+  <!-- Custom JavaScript -->
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBo0XoLFoSN38UORPAtIY8SM6FyIOvFbkY",
+      authDomain: "socialbet-b6c48.firebaseapp.com",
+      projectId: "socialbet-b6c48",
+      storageBucket: "socialbet-b6c48.appspot.com",
+      messagingSenderId: "924376857681",
+      appId: "1:924376857681:web:b9a152a12a484312024c70",
+      measurementId: "G-0N7NG79KJK"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Get a reference to the Firestore database and Auth
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Check if user is logged in
+    auth.onAuthStateChanged(function (user) {
+      if (user) {
+        // User is signed in, proceed with the rest of the script
+        console.log('User is signed in:', user.email);
+        initializeApp();
+      } else {
+        // No user is signed in, redirect to login page
+        console.log('No user signed in, redirecting to login page');
+        window.location.href = 'login.html';
+      }
+    });
+
+    function initializeApp() {
+      // Reference to HTML elements
+      const betCard = document.querySelector('.bet-card');
+      const betHeadline = document.querySelector('.bet-headline');
+      const betImage = document.querySelector('.bet-image');
+      const betPrice = document.querySelector('.bet-price');
+      const betOptions = document.querySelector('.bet-options');
+      const earningsFill = document.querySelector('.earnings-fill');
+      const option1Earnings = document.querySelector('.option1-earnings');
+      const option2Earnings = document.querySelector('.option2-earnings');
+      const swipeLeft = document.querySelector('.swipe-left');
+      const swipeRight = document.querySelector('.swipe-right');
+      const insufficientBalance = document.querySelector('.insufficient-balance');
+
+      let allBets = [];
+      let currentIndex = 0;
+      let selectedOption = null;
+      let userBalance = 0;
+
+      // Function to fetch user balance
+      function fetchUserBalance() {
+        const user = auth.currentUser;
+        if (user) {
+          db.collection('users').doc(user.uid).get().then((doc) => {
+            if (doc.exists) {
+              userBalance = doc.data().coins || 0;
+              console.log('User balance:', userBalance);
+            }
+          }).catch((error) => {
+            console.error("Error fetching user balance:", error);
+          });
+        }
+      }
+
+      // Function to fetch bets from Firestore
+      function fetchBets() {
+        db.collection("bet").get().then((querySnapshot) => {
+          allBets = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          console.log("All fetched bets:", allBets);
+          displayBet();
+        }).catch((error) => {
+          console.error("Error fetching bets:", error);
+        });
+      }
+
+      // Function to display the current bet
+      function displayBet() {
+        if (allBets.length > 0 && currentIndex < allBets.length) {
+          const bet = allBets[currentIndex];
+          console.log(`Displaying bet: ID=${bet.id}, Headline=${bet.headline}`);
+
+          betHeadline.textContent = bet.headline || 'No headline available';
+          betImage.src = bet.image || 'https://via.placeholder.com/400x200?text=No+Image';
+          betPrice.textContent = `${bet.price || 0} Coins`;
+
+          // Clear previous options
+          betOptions.innerHTML = '';
+
+          // Calculate potential earnings
+          const option1Participants = parseInt(bet.option1Earnings) || 0;
+          const option2Participants = parseInt(bet.option2Earnings) || 0;
+          const totalParticipants = option1Participants + option2Participants;
+          const currentBetPrice = parseInt(bet.price) || 0;
+          const totalPot = (totalParticipants * currentBetPrice) + currentBetPrice; // Include current user's potential bet
+
+          const option1PotentialEarnings = totalPot / (option1Participants + 1);
+          const option2PotentialEarnings = totalPot / (option2Participants + 1);
+
+          // Add new options
+          const options = [
+            {text: bet.option1, earnings: option1PotentialEarnings.toFixed(2)},
+            {text: bet.option2, earnings: option2PotentialEarnings.toFixed(2)}
+          ];
+
+          options.forEach((option, index) => {
+            const button = document.createElement('button');
+            button.textContent = option.text;
+            button.classList.add('bet-option');
+            button.addEventListener('click', () => selectOption(index));
+            betOptions.appendChild(button);
+          });
+
+          option1Earnings.textContent = `${bet.option1}: ${options[0].earnings} Coins`;
+          option2Earnings.textContent = `${bet.option2}: ${options[1].earnings} Coins`;
+
+          // Calculate the percentage for the earnings bar
+          const option1Percentage = totalPot > 0 ? (option1PotentialEarnings / (option1PotentialEarnings + option2PotentialEarnings)) * 100 : 50;
+          earningsFill.style.width = `${option1Percentage}%`;
+
+          betCard.style.display = 'flex';
+          betCard.style.opacity = '1';
+          betCard.style.transform = 'none';
+          selectedOption = null;
+          insufficientBalance.style.display = 'none';
+
+          // Check if user has sufficient balance
+          if (userBalance < bet.price) {
+            insufficientBalance.style.display = 'block';
+            disableRightSwipe();
+          } else {
+            enableRightSwipe();
+          }
+        } else {
+          betCard.style.display = 'none';
+          betHeadline.textContent = 'No more bets';
+        }
+      }
+
+      function selectOption(index) {
+        selectedOption = index;
+        const options = betOptions.querySelectorAll('.bet-option');
+        options.forEach((option, i) => {
+          if (i === index) {
+            option.style.transform = 'scale(1.1)';
+            option.style.boxShadow = '0 0 10px rgba(0,0,0,0.2)';
+          } else {
+            option.style.transform = 'scale(1)';
+            option.style.boxShadow = 'none';
+          }
+        });
+      }
+
+      function disableRightSwipe() {
+        swipeRight.style.opacity = '0.5';
+        swipeRight.style.cursor = 'not-allowed';
+        swipeRight.removeEventListener('click', handleRightSwipe);
+      }
+
+      function enableRightSwipe() {
+        swipeRight.style.opacity = '1';
+        swipeRight.style.cursor = 'pointer';
+        swipeRight.addEventListener('click', handleRightSwipe);
+      }
+
+      function handleRightSwipe() {
+        if (selectedOption === null) {
+          console.log('Please select an option before swiping right');
+          return;
+        }
+
+        const bet = allBets[currentIndex];
+        const user = auth.currentUser;
+
+        if (user) {
+          if (userBalance >= bet.price) {
+            // Deduct entry price from user's balance
+            userBalance -= bet.price;
+            db.collection('users').doc(user.uid).update({
+              coins: userBalance
+            });
+
+            // Update bet participants
+            const selectedOptionField = selectedOption === 0 ? 'option1Earnings' : 'option2Earnings';
+            db.collection('bet').doc(bet.id).update({
+              [selectedOptionField]: firebase.firestore.FieldValue.increment(1)
+            });
+
+            // Add user to participants collection
+            db.collection('participants').add({
+              userId: user.uid,
+              userEmail: user.email,
+              betId: bet.id,
+              selectedOption: selectedOption,
+              participationTime: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            console.log(`Bet placed on option: ${selectedOption === 0 ? bet.option1 : bet.option2}`);
+            swipe('right');
+          } else {
+            insufficientBalance.style.display = 'block';
+            disableRightSwipe();
+          }
+        }
+      }
+
+      function swipe(direction) {
+        if (direction === 'right' && userBalance < allBets[currentIndex].price) {
+          console.log('Cannot swipe right due to insufficient balance');
+          return;
+        }
+
+        betCard.classList.add(`swiping-${direction}`);
+
+        setTimeout(() => {
+          betCard.classList.remove(`swiping-${direction}`);
+          betCard.style.transform = 'none';
+          betCard.style.opacity = '1';
+          currentIndex++;
+          displayBet();
+        }, 300);
+      }
+
+      // Event listeners for swipe buttons (only for non-mobile devices)
+      if (!isMobile()) {
+        swipeLeft.addEventListener('click', () => swipe('left'));
+        // Right swipe is handled by handleRightSwipe function
+      }
+
+      // Add touch events for mobile swiping
+      let touchStartX = 0;
+      let touchEndX = 0;
+      const swipeThreshold = window.innerWidth * 0.3; // 30% of screen width
+
+      betCard.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, {passive: true});
+
+      betCard.addEventListener('touchmove', (e) => {
+        const currentX = e.changedTouches[0].screenX;
+        const diff = currentX - touchStartX;
+        const rotation = diff * 0.1;
+        betCard.style.transform = `translateX(${diff}px) rotate(${rotation}deg)`;
+      }, {passive: true});
+
+      betCard.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchEndX - touchStartX;
+
+        if (Math.abs(diff) >= swipeThreshold) {
+          if (diff > 0 && userBalance >= allBets[currentIndex].price) {
+            handleRightSwipe();
+          } else if (diff < 0) {
+            swipe('left');
+          } else {
+            // Reset card position if swipe was not allowed
+            betCard.style.transform = 'none';
+            insufficientBalance.style.display = 'block';
+          }
+        } else {
+          // Reset card position if swipe was not far enough
+          betCard.style.transform = 'none';
+        }
+      }, {passive: true});
+
+      // Menu functionality
+      const menuIcon = document.getElementById('menuIcon');
+      const sideMenu = document.getElementById('sideMenu');
+
+      menuIcon.addEventListener('click', () => {
+        sideMenu.classList.toggle('open');
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', (event) => {
+        if (!sideMenu.contains(event.target) && !menuIcon.contains(event.target)) {
+          sideMenu.classList.remove('open');
+        }
+      });
+
+      // Logout functionality
+      const logoutButton = document.getElementById('logoutButton');
+      logoutButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        auth.signOut().then(() => {
+          console.log('User signed out successfully');
+          window.location.href = 'login.html';
+        }).catch((error) => {
+          console.error('Error signing out:', error);
+        });
+      });
+
+      // Fetch user balance and bets when the page loads
+      fetchUserBalance();
+      fetchBets();
+    }
+
+    // Function to check if the device is mobile
+    function isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+  </script>
+</body>
+
+</html>

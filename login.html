@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socialbet - Login </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png'), 
+                              linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .login-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .login-form input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.5);
+        }
+        .login-btn, .google-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        .login-btn {
+            background-color: #667eea;
+            color: white;
+        }
+        .login-btn:hover {
+            background-color: #764ba2;
+        }
+        .google-btn {
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .google-btn:hover {
+            background-color: #f5f5f5;
+        }
+        .google-btn i {
+            margin-right: 10px;
+            font-size: 20px;
+            color: #4285F4;
+        }
+        .signup-link {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .signup-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            color: #ff4444;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="login-title">Social Bet</h1>
+        <form class="login-form">
+            <input type="email" placeholder="Email" required>
+            <input type="password" placeholder="Password" required>
+            <button type="submit" class="login-btn">Log In</button>
+        </form>
+        <button class="google-btn" id="googleSignIn">
+            <i class="fab fa-google"></i> Sign in with Google
+        </button>
+        <div class="signup-link">
+            Don't have an account? <a href="#">Sign up</a>
+        </div>
+        <div id="errorMessage" class="error-message"></div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBo0XoLFoSN38UORPAtIY8SM6FyIOvFbkY",
+            authDomain: "socialbet-b6c48.firebaseapp.com",
+            projectId: "socialbet-b6c48",
+            storageBucket: "socialbet-b6c48.appspot.com",
+            messagingSenderId: "924376857681",
+            appId: "1:924376857681:web:b9a152a12a484312024c70",
+            measurementId: "G-0N7NG79KJK"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Check if user is already logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, redirect to index.html
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Google Sign-In
+        document.getElementById('googleSignIn').addEventListener('click', () => {
+            const provider = new GoogleAuthProvider();
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    // Handle successful login
+                    console.log("Google Sign-In Successful", result.user);
+                    window.location.href = 'index.html';
+                }).catch((error) => {
+                    // Handle errors
+                    console.error("Google Sign-In Error", error);
+                    document.getElementById('errorMessage').textContent = "Google Sign-In failed. Please try again.";
+                });
+        });
+
+        // Regular email/password login
+        document.querySelector('.login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = e.target.elements[0].value;
+            const password = e.target.elements[1].value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Handle successful login
+                    console.log("Email/Password Login Successful", userCredential.user);
+                    window.location.href = 'index.html';
+                })
+                .catch((error) => {
+                    // Handle errors
+                    console.error("Email/Password Login Error", error);
+                    document.getElementById('errorMessage').textContent = "Invalid email or password. Please try again.";
+                });
+        });
+    </script>
+</body>
+</html>

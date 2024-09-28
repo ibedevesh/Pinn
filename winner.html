@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Winner Checker</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f0f0f0;
+      background-image: url('https://www.transparenttextures.com/patterns/cubes.png'),
+        linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-attachment: fixed;
+      color: #333;
+    }
+
+    .container {
+      margin-top: 50px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 500px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .form-group button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4ecdc4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-group button:hover {
+      background-color: #3bb3a1;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .result table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .result th, .result td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    .result th {
+      background-color: #4ecdc4;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Check Winner</h1>
+    <div class="form-group">
+      <label for="betId">Bet ID</label>
+      <input type="text" id="betId" placeholder="Enter Bet ID">
+    </div>
+    <div class="form-group">
+      <label for="selectedOption">Selected Option (0 or 1)</label>
+      <input type="number" id="selectedOption" placeholder="Enter Selected Option">
+    </div>
+    <div class="form-group">
+      <button id="checkWinnerButton">Check Winner</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+
+  <!-- Custom JavaScript -->
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBo0XoLFoSN38UORPAtIY8SM6FyIOvFbkY",
+      authDomain: "socialbet-b6c48.firebaseapp.com",
+      projectId: "socialbet-b6c48",
+      storageBucket: "socialbet-b6c48.appspot.com",
+      messagingSenderId: "924376857681",
+      appId: "1:924376857681:web:b9a152a12a484312024c70",
+      measurementId: "G-0N7NG79KJK"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Get a reference to the Firestore database and Auth
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Check if user is logged in
+    auth.onAuthStateChanged(function (user) {
+      if (user) {
+        // User is signed in, proceed with the rest of the script
+        console.log('User is signed in:', user.email);
+        initializeApp();
+      } else {
+        // No user is signed in, redirect to login page
+        console.log('No user signed in, redirecting to login page');
+        window.location.href = 'login.html';
+      }
+    });
+
+    function initializeApp() {
+      document.getElementById('checkWinnerButton').addEventListener('click', () => {
+        const betId = document.getElementById('betId').value;
+        const selectedOption = parseInt(document.getElementById('selectedOption').value);
+        const resultDiv = document.getElementById('result');
+
+        if (!betId || isNaN(selectedOption) || (selectedOption !== 0 && selectedOption !== 1)) {
+          resultDiv.innerHTML = '<p style="color: red;">Please enter a valid Bet ID and Selected Option (0 or 1).</p>';
+          return;
+        }
+
+        // Fetch the bet price from the bet collection
+        db.collection('bet').doc(betId).get().then((betDoc) => {
+          if (betDoc.exists) {
+            const betPrice = betDoc.data().price;
+
+            // Fetch all participants for this bet
+            db.collection('participants')
+              .where('betId', '==', betId)
+              .get()
+              .then((allParticipants) => {
+                const totalBetPlaced = allParticipants.size * betPrice;
+
+                // Fetch participants who selected the winning option
+                db.collection('participants')
+                  .where('betId', '==', betId)
+                  .where('selectedOption', '==', selectedOption)
+                  .get()
+                  .then((winningParticipants) => {
+                    if (!winningParticipants.empty) {
+                      const winners = {};
+                      const winningAmount = totalBetPlaced / winningParticipants.size;
+
+                      winningParticipants.forEach((doc) => {
+                        const userEmail = doc.data().userEmail;
+                        const userId = doc.data().userId;
+                        if (winners[userId]) {
+                          winners[userId].totalWinnings += winningAmount;
+                          winners[userId].participations += 1;
+                        } else {
+                          winners[userId] = { totalWinnings: winningAmount, email: userEmail, participations: 1 };
+                        }
+                      });
+
+                      // Display the winners and their total winnings in a table
+                      const tableRows = Object.entries(winners).map(([userId, data]) => {
+                        return `<tr><td>${userId}</td><td>${data.email}</td><td>${data.totalWinnings.toFixed(2)} Coins</td></tr>`;
+                      }).join('');
+                      resultDiv.innerHTML = `
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>User ID</th>
+                              <th>Email</th>
+                              <th>Total Winnings</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            ${tableRows}
+                          </tbody>
+                        </table>`;
+                    } else {
+                      resultDiv.innerHTML = '<p style="color: red;">No winners found for the selected option.</p>';
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Error fetching participants data:", error);
+                    resultDiv.innerHTML = '<p style="color: red;">An error occurred while fetching the participants data.</p>';
+                  });
+              })
+              .catch((error) => {
+                console.error("Error fetching all participants data:", error);
+                resultDiv.innerHTML = '<p style="color: red;">An error occurred while fetching all participants data.</p>';
+              });
+          } else {
+            resultDiv.innerHTML = '<p style="color: red;">Bet ID not found.</p>';
+          }
+        }).catch((error) => {
+          console.error("Error fetching bet data:", error);
+          resultDiv.innerHTML = '<p style="color: red;">An error occurred while fetching the bet data.</p>';
+        });
+      });
+    }
+  </script>
+</body>
+
+</html>
